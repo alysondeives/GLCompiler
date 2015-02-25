@@ -11,8 +11,6 @@
 * Construção de um compilador para uma linguagem gráfica que executa scripts de animação
 *   
 * @author Alyson Deives Pereira		Matricula: 416589
-* @author Douglas de Loreto Borges	Matricula: 417889
-* @author Matheus Lincoln Pereira	Matricula: 415904
 * @version 1.0 15/04/2013            
 *
 */
@@ -20,9 +18,9 @@
 /* Classe que realiza a análise léxica */
 
 #include <fstream>
-#include "Lex.h"
-#include "GLCompilerException.h"
-#include "FileReader.h"
+#include "../include/Lex.h"
+#include "../include/GLCompilerException.h"
+#include "../include/FileReader.h"
 
 using namespace std;
 

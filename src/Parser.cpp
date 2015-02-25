@@ -11,17 +11,15 @@
 * Construção de um compilador para uma linguagem gráfica que executa scripts de animação
 *   
 * @author Alyson Deives Pereira		Matricula: 416589
-* @author Douglas de Loreto Borges	Matricula: 417889
-* @author Matheus Lincoln Pereira	Matricula: 415904
 * @version 1.0 15/04/2013            
 *
 */
 
 /* Classe que realiza a analise sintática */
 
-#include "GLCompilerException.h"
-#include "Parser.h"
-#include "FileWriter.h"
+#include "../include/GLCompilerException.h"
+#include "../include/Parser.h"
+#include "../include/FileWriter.h"
 
 Parser::Parser(char * _arquivo, bool _opt){
 	lex = new Lex(_arquivo);

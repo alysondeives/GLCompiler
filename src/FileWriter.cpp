@@ -11,16 +11,14 @@
 * Construção de um compilador para uma linguagem gráfica que executa scripts de animação
 *   
 * @author Alyson Deives Pereira		Matricula: 416589
-* @author Douglas de Loreto Borges	Matricula: 417889
-* @author Matheus Lincoln Pereira	Matricula: 415904
 * @version 1.0 15/04/2013            
 *
 */
 
 /* Classe para leitura do arquivo fonte */
 
-#include "FileWriter.h"
-#include "GLCompilerException.h"
+#include "../include/FileWriter.h"
+#include "../include/GLCompilerException.h"
 #include <map>
 #include <unordered_map>
 #include <sys/stat.h>
@@ -131,28 +129,6 @@ void FileWriter::salvarPeephole(){
 	}
 }
 
-	/*int economia = 0;
-	for(short i = 0; i<currentInstruction; i++){
-		short size = sizeOf((GCX::Instruction)instructions[i][0]);
-		if(isBranch(instructions[i][0])){
-			instructions[i][2] -= economia;
-		}
-		else if (instructions[i][0] == JMP){
-			instructions[i][1] -= economia;
-		}
-		if(!(((instructions[i][0] == STO && instructions[i+1][0] == LOD) || (instructions[i][0] == STOF && instructions[i+1][0] == LODF)) && instructions[i][1] == instructions[i+1][1] && instructions[i][2] == instructions[i+1][2] && !isLabelInstruction(i+1))){
-			for(short j = 0; j<size;j++){
-				binary.write((char*) &instructions[i][j], sizeof(short int));
-			}
-		}
-		else{
-			i++;
-			economia += 6;
-		}
-	}
-}
-*/
-
 void FileWriter::addInstruction(short _ins, short _op1, short _op2, short _op3){
 	instructions[currentInstruction][0] = _ins;
 	instructions[currentInstruction][1] = _op1;
@@ -223,22 +199,22 @@ void FileWriter::write(Instruction _ins, RealRegister _regA, RealRegister _regB)
 void FileWriter::write(Instruction _ins, IntegerRegister _regA, short _val){
 	if (_ins == ADI || _ins == LDI){
 		addInstruction(_ins, _regA, _val);
-		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string ((long double) _val) <<endl;
+		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string (_val) <<endl;
 	}
 	else if (_ins == LOD || _ins == STO){
 		addInstruction(_ins, _regA, _val);
-		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", " + to_string ((long double) _val) + "(DS)"<<endl;
+		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", " + to_string (_val) + "(DS)"<<endl;
 	}
-	else throw InvalidInstructionException(nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string ((long double) _val));
+	else throw InvalidInstructionException(nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string (_val));
 }
 
 /* ADIF, LDIF */
 void FileWriter::write(Instruction _ins, RealRegister _regA, short _intVal, short _fracVal){
 	if (_ins == ADIF || _ins == LDIF){
 		addInstruction(_ins, _regA, _intVal, _fracVal);
-		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string((long double) ((double)_intVal + (double)_fracVal/10000))<<endl;
+		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string(((double)_intVal + (double)_fracVal/10000))<<endl;
 	}
-	else throw InvalidInstructionException(nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string((long double) ((double)_intVal + (double)_fracVal/10000)));
+	else throw InvalidInstructionException(nameOf(_ins) + " " + nameOf(_regA) + ", #" + to_string(((double)_intVal + (double)_fracVal/10000)));
 }
 
 /*BNG, BNN, BNP, BNZ, BPS, BZR */
@@ -254,9 +230,9 @@ void FileWriter::write(Instruction _ins, IntegerRegister _regA, Label _label){
 void FileWriter::write(Instruction _ins, RealRegister _regA, short _desl){
 	if (_ins == LODF || _ins == STOF){
 		addInstruction(_ins, _regA, _desl);
-		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", " + to_string ((long double) _desl) + "(DS)"<<endl;
+		assembly<<"\t"+nameOf(_ins) + " " + nameOf(_regA) + ", " + to_string (_desl) + "(DS)"<<endl;
 	}
-	else throw InvalidInstructionException(nameOf(_ins) + " " + nameOf(_regA) + ", " + to_string ((long double) _desl) + "(DS)");
+	else throw InvalidInstructionException(nameOf(_ins) + " " + nameOf(_regA) + ", " + to_string (_desl) + "(DS)");
 }
 
 /*BNGF, BNNF, BNPF, BNZF, BPSF, BZRF */
@@ -272,20 +248,20 @@ void FileWriter::write(Instruction _ins, RealRegister _regA, Label _label){
 void FileWriter::write(Instruction _ins, short _intVal, short _desl){
 	if (_ins == STI){
 		addInstruction(_ins, _intVal, _desl);
-		assembly<<"\t"+nameOf(_ins) + " #" + to_string((long double)_intVal) + ", " + to_string((long double) _desl) + " (DS)"<<endl;
+		assembly<<"\t"+nameOf(_ins) + " #" + to_string(_intVal) + ", " + to_string(_desl) + " (DS)"<<endl;
 		DS++;
 	}
-	else throw InvalidInstructionException(nameOf(_ins) + " #" + to_string((long double)_intVal) + ", " + to_string((long double) _desl) + " (DS)");
+	else throw InvalidInstructionException(nameOf(_ins) + " #" + to_string(_intVal) + ", " + to_string(_desl) + " (DS)");
 }
 
 /* STIF */
 void FileWriter::write(Instruction _ins, short _intVal, short _fracVal, short _desl){
 	if (_ins == STIF){
 		addInstruction(_ins, _intVal, _fracVal, _desl);
-		assembly<<"\t"+nameOf(_ins) + " #" + to_string((long double) ((double)_intVal + (double)_fracVal/10000)) + ", " + to_string((long double) _desl) + " (DS)"<<endl;
+		assembly<<"\t"+nameOf(_ins) + " #" + to_string(((double)_intVal + (double)_fracVal/10000)) + ", " + to_string(_desl) + " (DS)"<<endl;
 		DS += 2;
 	}
-	else throw InvalidInstructionException(nameOf(_ins) + " #" + to_string((long double) ((double)_intVal + (double)_fracVal/10000)) + ", " + to_string((long double) _desl) + " (DS)");
+	else throw InvalidInstructionException(nameOf(_ins) + " #" + to_string(((double)_intVal + (double)_fracVal/10000)) + ", " + to_string(_desl) + " (DS)");
 }
 
 /* CNV */
